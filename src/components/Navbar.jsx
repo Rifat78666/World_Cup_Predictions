@@ -98,9 +98,11 @@ export default function Navbar({ activePage, setActivePage }) {
     { id: "teams", label: "Teams" },
     { id: "predictions", label: "My Predictions" },
     { id: "fantasy", label: "Fantasy Squad" },
+    { id: "draft", label: "Live Draft" },
     { id: "live", label: "Live Gameweek" },
     { id: "leaderboard", label: "Leaderboard" },
-    { id: "ai", label: "AI Analysis" }
+    { id: "ai", label: "AI Analysis" },
+    { id: "settings", label: "Settings" }
   ];
 
   return (
