@@ -192,7 +192,7 @@ export const PredictorProvider = ({ children }) => {
   // Reset all group predictions
   const resetAllPredictions = () => {
     setGroupFixtures(initialFixtures);
-    setKnockoutPredictions({});
+    setKnockoutPredictions(generateDefaultKnockoutPredictions(initialFixtures));
   };
 
   // Autocomplete all group matches with random scores for easy testing
