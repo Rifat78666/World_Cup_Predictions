@@ -1,0 +1,30 @@
+{
+  "short_name": "WC2026",
+  "name": "FIFA World Cup 2026 Predictor & Fantasy Manager",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    },
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/World_Cup_Predictions/",
+  "background_color": "#0b0f19",
+  "theme_color": "#4f46e5",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/World_Cup_Predictions/",
+  "description": "Predict the matches, manage your fantasy squad, join snake drafts, and get AI insights for the 2026 FIFA World Cup."
+}
