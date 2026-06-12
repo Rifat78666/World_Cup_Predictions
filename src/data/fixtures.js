@@ -19,6 +19,45 @@ const venues = [
   "Toronto Stadium (BMO Field)"
 ];
 
+const getAiScore = (homeRank, awayRank, matchId) => {
+  const diff = awayRank - homeRank; // negative means away is better, positive means home is better
+  let home = 1;
+  let away = 1;
+
+  if (diff > 45) {
+    home = 3;
+    away = 0;
+  } else if (diff > 20) {
+    home = 2;
+    away = 0;
+  } else if (diff > 5) {
+    home = 2;
+    away = 1;
+  } else if (diff < -45) {
+    home = 0;
+    away = 3;
+  } else if (diff < -20) {
+    home = 0;
+    away = 2;
+  } else if (diff < -5) {
+    home = 1;
+    away = 2;
+  } else {
+    // Close ranking: decide draw or narrow win based on matchId
+    if (matchId % 3 === 0) {
+      home = 1;
+      away = 1;
+    } else if (matchId % 2 === 0) {
+      home = 2;
+      away = 1;
+    } else {
+      home = 1;
+      away = 2;
+    }
+  }
+  return { home, away };
+};
+
 const generateGroupFixtures = () => {
   const fixturesList = [];
   let matchId = 1;
@@ -44,6 +83,8 @@ const generateGroupFixtures = () => {
         const dateString = baseDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
         const venue = venues[(groupIdx * 6 + muIdx) % venues.length];
         
+        const predictedScore = getAiScore(mu.home.ranking, mu.away.ranking, matchId);
+
         fixturesList.push({
           id: matchId++,
           group: letter,
@@ -53,8 +94,8 @@ const generateGroupFixtures = () => {
           date: dateString,
           time: muIdx % 2 === 0 ? "18:00 EST" : "21:00 EST",
           venue: venue,
-          homeScore: "",
-          awayScore: ""
+          homeScore: predictedScore.home,
+          awayScore: predictedScore.away
         });
       });
     }
@@ -65,3 +106,4 @@ const generateGroupFixtures = () => {
 
 export const fixtures = generateGroupFixtures();
 export { venues };
+

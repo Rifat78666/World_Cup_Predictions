@@ -9,6 +9,121 @@ import {
 
 const PredictorContext = createContext();
 
+const generateDefaultKnockoutPredictions = (fixtures) => {
+  const standings = {};
+  const groupLetters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
+  
+  groupLetters.forEach(letter => {
+    const groupFix = fixtures.filter(f => f.group === letter);
+    standings[letter] = calculateGroupStandings(letter, groupFix);
+  });
+
+  const thirdStandings = calculateThirdPlaceStandings(standings);
+  const top8 = thirdStandings.slice(0, 8);
+  const pairings = top8.length === 8 ? pairThirdPlaceTeams(top8) : {};
+
+  const getWinner = (g) => standings[g]?.[0]?.id || `Winner ${g}`;
+  const getRunnerUp = (g) => standings[g]?.[1]?.id || `Runner-up ${g}`;
+  const getThirdPlaced = (g) => pairings[g]?.id || `3rd ${g}`;
+
+  const getTeamRank = (id) => {
+    const t = teams.find(x => x.id === id);
+    return t ? t.ranking : 99;
+  };
+
+  const simMatch = (home, away, mId) => {
+    const rH = getTeamRank(home);
+    const rA = getTeamRank(away);
+    const diff = rA - rH;
+    let hs = 1;
+    let as = 1;
+    if (diff > 25) { hs = 2; as = 0; }
+    else if (diff > 5) { hs = 2; as = 1; }
+    else if (diff < -25) { hs = 0; as = 2; }
+    else if (diff < -5) { hs = 1; as = 2; }
+    else {
+      if (mId % 2 === 0) { hs = 2; as = 1; }
+      else { hs = 1; as = 2; }
+    }
+    const win = hs > as ? home : away;
+    return { homeTeam: home, awayTeam: away, homeScore: hs, awayScore: as, winner: win };
+  };
+
+  const preds = {};
+
+  // R32
+  const r32 = {};
+  r32[1] = { home: getRunnerUp("A"), away: getRunnerUp("B") };
+  r32[2] = { home: getWinner("C"), away: getRunnerUp("F") };
+  r32[3] = { home: getWinner("E"), away: getThirdPlaced("E") };
+  r32[4] = { home: getWinner("F"), away: getRunnerUp("C") };
+  r32[5] = { home: getRunnerUp("E"), away: getRunnerUp("I") };
+  r32[6] = { home: getWinner("I"), away: getThirdPlaced("I") };
+  r32[7] = { home: getWinner("A"), away: getThirdPlaced("A") };
+  r32[8] = { home: getWinner("L"), away: getThirdPlaced("L") };
+  r32[9] = { home: getWinner("G"), away: getThirdPlaced("G") };
+  r32[10] = { home: getWinner("D"), away: getThirdPlaced("D") };
+  r32[11] = { home: getWinner("H"), away: getRunnerUp("J") };
+  r32[12] = { home: getRunnerUp("K"), away: getRunnerUp("L") };
+  r32[13] = { home: getWinner("B"), away: getThirdPlaced("B") };
+  r32[14] = { home: getRunnerUp("D"), away: getRunnerUp("G") };
+  r32[15] = { home: getWinner("J"), away: getRunnerUp("H") };
+  r32[16] = { home: getWinner("K"), away: getThirdPlaced("K") };
+
+  for (let i = 1; i <= 16; i++) {
+    preds[`r32_${i}`] = simMatch(r32[i].home, r32[i].away, i);
+  }
+
+  // R16
+  const r16Pairings = [
+    [1, 2], [3, 4], [5, 6], [7, 8],
+    [9, 10], [11, 12], [13, 14], [15, 16]
+  ];
+  r16Pairings.forEach((pair, idx) => {
+    const mNum = idx + 17;
+    const t1 = preds[`r32_${pair[0]}`].winner;
+    const t2 = preds[`r32_${pair[1]}`].winner;
+    preds[`r16_${mNum}`] = simMatch(t1, t2, mNum);
+  });
+
+  // QF
+  const qfPairings = [
+    [17, 18], [19, 20], [21, 22], [23, 24]
+  ];
+  qfPairings.forEach((pair, idx) => {
+    const mNum = idx + 25;
+    const t1 = preds[`r16_${pair[0]}`].winner;
+    const t2 = preds[`r16_${pair[1]}`].winner;
+    preds[`qf_${mNum}`] = simMatch(t1, t2, mNum);
+  });
+
+  // SF
+  const sfPairings = [
+    [25, 26], [27, 28]
+  ];
+  sfPairings.forEach((pair, idx) => {
+    const mNum = idx + 29;
+    const t1 = preds[`qf_${pair[0]}`].winner;
+    const t2 = preds[`qf_${pair[1]}`].winner;
+    preds[`sf_${mNum}`] = simMatch(t1, t2, mNum);
+  });
+
+  // Third Place
+  const getLoser = (mKey, win) => {
+    return preds[mKey].homeTeam === win ? preds[mKey].awayTeam : preds[mKey].homeTeam;
+  };
+  const l1 = getLoser("sf_29", preds["sf_29"].winner);
+  const l2 = getLoser("sf_30", preds["sf_30"].winner);
+  preds["thirdPlace_31"] = simMatch(l1, l2, 31);
+
+  // Final
+  const f1 = preds["sf_29"].winner;
+  const f2 = preds["sf_30"].winner;
+  preds["final_32"] = simMatch(f1, f2, 32);
+
+  return preds;
+};
+
 export const PredictorProvider = ({ children }) => {
   // Store group fixtures with user predictions
   const [groupFixtures, setGroupFixtures] = useState(() => {
@@ -19,7 +134,8 @@ export const PredictorProvider = ({ children }) => {
   // Store knockout match predictions: matchId -> { homeTeam, awayTeam, homeScore, awayScore, winner }
   const [knockoutPredictions, setKnockoutPredictions] = useState(() => {
     const saved = localStorage.getItem("wc_knockout_predictions");
-    return saved ? JSON.parse(saved) : {};
+    if (saved) return JSON.parse(saved);
+    return generateDefaultKnockoutPredictions(initialFixtures);
   });
 
   // Calculate standings
