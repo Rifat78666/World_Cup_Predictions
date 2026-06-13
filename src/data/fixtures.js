@@ -79,7 +79,9 @@ const generateGroupFixtures = () => {
       ];
       
       matchups.forEach((mu, muIdx) => {
-        const baseDate = new Date(2026, 5, 11 + mu.dateOffset);
+        // Stagger groups so 2 groups start per day
+        const groupDayOffset = Math.floor(groupIdx / 2); 
+        const baseDate = new Date(2026, 5, 11 + mu.dateOffset + groupDayOffset);
         const dateString = baseDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
         const venue = venues[(groupIdx * 6 + muIdx) % venues.length];
         
