@@ -8,7 +8,7 @@ console.log("Generated VAPID Public Key:\n", vapidKeys.publicKey);
 console.log("\nGenerated VAPID Private Key:\n", vapidKeys.privateKey);
 console.log("=========================================");
 
-webpush.setVAPIDDetails(
+webpush.setVapidDetails(
   "mailto:your-email@example.com",
   vapidKeys.publicKey,
   vapidKeys.privateKey

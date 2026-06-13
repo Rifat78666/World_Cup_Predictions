@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { usePredictor } from "../context/PredictorContext.jsx";
 import { teams as initialTeams } from "../data/teams.js";
-import { Sparkles, RefreshCw, Star, Info } from "lucide-react";
+import { Sparkles, RefreshCw, Star, Info, Calendar } from "lucide-react";
 
 export default function Groups() {
   const {
@@ -29,6 +29,10 @@ export default function Groups() {
 
   const activeFixtures = groupFixtures.filter(f => f.group === activeGroup);
   const activeStandings = groupStandings[activeGroup] || [];
+
+  // Mocking "Today" to match the first date in the dataset (or current date if matching)
+  const todaysDate = "Jun 11, 2026"; 
+  const todaysMatches = groupFixtures.filter(f => f.date === todaysDate);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-6">
@@ -60,6 +64,38 @@ export default function Groups() {
             <RefreshCw className="h-4 w-4" />
             Reset
           </button>
+        </div>
+      </div>
+
+      {/* Today's Matches Carousel / Section */}
+      <div className="mb-8">
+        <h2 className="text-xl font-bold flex items-center gap-2 border-b border-border pb-2 text-left mb-4">
+          <Calendar className="h-5 w-5 text-indigo-500" />
+          Today's Matches <span className="text-xs font-semibold text-muted bg-slate-500/10 px-2 py-0.5 rounded-full">{todaysDate}</span>
+        </h2>
+        
+        <div className="flex overflow-x-auto gap-4 pb-4 snap-x pr-2 custom-scrollbar">
+          {todaysMatches.map(fix => (
+            <div key={fix.id} className="min-w-[300px] shrink-0 snap-center rounded-2xl bg-card border border-border p-4 transition-all duration-200 hover:border-indigo-500/40">
+              <div className="flex items-center justify-between text-[10px] text-muted font-bold uppercase tracking-widest mb-3">
+                <span>Group {fix.group}</span>
+                <span>{fix.time}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 font-bold w-[40%]">
+                  <span className="text-2xl">{getTeamFlag(fix.home)}</span>
+                  <span className="truncate">{getTeamName(fix.home)}</span>
+                </div>
+                <div className="text-center font-extrabold text-sm px-2.5 py-1 bg-muted-foreground/15 rounded-lg text-indigo-600 dark:text-indigo-400">
+                  {fix.homeScore} - {fix.awayScore}
+                </div>
+                <div className="flex items-center justify-end gap-2 font-bold w-[40%] text-right">
+                  <span className="truncate">{getTeamName(fix.away)}</span>
+                  <span className="text-2xl">{getTeamFlag(fix.away)}</span>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
