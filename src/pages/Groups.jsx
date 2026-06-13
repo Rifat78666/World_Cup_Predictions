@@ -47,11 +47,11 @@ export default function Groups() {
   if (isRealEspnMatches) {
     todaysDate = "Jun 13, 2026";
     todaysMatches = [
-      { id: "espn1", group: "Friendly", time: "11:00 PM", isReal: true, homeName: "Brazil", awayName: "Morocco", homeFlag: "🇧🇷", awayFlag: "🇲🇦", homeScore: "-", awayScore: "-" },
-      { id: "espn2", group: "Friendly", time: "9:00 PM", isReal: true, homeName: "Netherlands", awayName: "Japan", homeFlag: "🇳🇱", awayFlag: "🇯🇵", homeScore: "-", awayScore: "-" },
+      { id: "espn1", group: "World Cup", time: "11:00 PM", isReal: true, homeName: "Brazil", awayName: "Morocco", homeFlag: "🇧🇷", awayFlag: "🇲🇦", homeScore: "-", awayScore: "-" },
+      { id: "espn2", group: "World Cup", time: "9:00 PM", isReal: true, homeName: "Netherlands", awayName: "Japan", homeFlag: "🇳🇱", awayFlag: "🇯🇵", homeScore: "-", awayScore: "-" },
       { id: "espn3", group: "World Cup", time: "8:00 PM", isReal: true, homeName: "Switzerland", awayName: "Qatar", homeFlag: "🇨🇭", awayFlag: "🇶🇦", homeScore: "-", awayScore: "-" },
       { id: "espn4", group: "World Cup", time: "5:00 AM", isReal: true, homeName: "Australia", awayName: "Türkiye", homeFlag: "🇦🇺", awayFlag: "🇹🇷", homeScore: "-", awayScore: "-" },
-      { id: "espn5", group: "Qualifier", time: "6:00 PM", isReal: true, homeName: "Germany", awayName: "Curaçao", homeFlag: "🇩🇪", awayFlag: "🇨🇼", homeScore: "-", awayScore: "-" },
+      { id: "espn5", group: "World Cup", time: "6:00 PM", isReal: true, homeName: "Germany", awayName: "Curaçao", homeFlag: "🇩🇪", awayFlag: "🇨🇼", homeScore: "-", awayScore: "-" },
       { id: "espn6", group: "World Cup", time: "12:00 AM", isReal: true, homeName: "Ivory Coast", awayName: "Ecuador", homeFlag: "🇨🇮", awayFlag: "🇪🇨", homeScore: "-", awayScore: "-" },
       { id: "espn7", group: "World Cup", time: "5:00 PM", isReal: true, homeName: "Spain", awayName: "Cape Verde", homeFlag: "🇪🇸", awayFlag: "🇨🇻", homeScore: "-", awayScore: "-" },
       { id: "espn8", group: "World Cup", time: "9:00 PM", isReal: true, homeName: "England", awayName: "Croatia", homeFlag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", awayFlag: "🇭🇷", homeScore: "-", awayScore: "-" }
