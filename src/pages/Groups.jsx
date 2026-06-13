@@ -30,9 +30,17 @@ export default function Groups() {
   const activeFixtures = groupFixtures.filter(f => f.group === activeGroup);
   const activeStandings = groupStandings[activeGroup] || [];
 
-  // Mocking "Today" to match the first date in the dataset (or current date if matching)
-  const todaysDate = "Jun 11, 2026"; 
-  const todaysMatches = groupFixtures.filter(f => f.date === todaysDate);
+  // Get today's date dynamically to match current system time
+  const todayObj = new Date();
+  let todaysDate = todayObj.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  
+  let todaysMatches = groupFixtures.filter(f => f.date === todaysDate);
+  
+  // If there are no matches today (e.g. tournament hasn't started yet or is over), fallback to the first tournament day
+  if (todaysMatches.length === 0 && groupFixtures.length > 0) {
+    todaysDate = groupFixtures[0].date;
+    todaysMatches = groupFixtures.filter(f => f.date === todaysDate);
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-6">
