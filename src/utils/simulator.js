@@ -107,7 +107,13 @@ export const simulateMatchEvents = (matchId, homeTeamId, awayTeamId, homeScore, 
       
       // Check for own goal (2% chance)
       if (rng() < 0.02) {
-        const defPlayer = defendingPlayers.filter(p => p.position !== "GK")[Math.floor(rng() * defendingPlayers.length - 1)] || defendingPlayers[0];
+        const nonGk = defendingPlayers.filter(p => p.position !== "GK");
+        const defPlayer = nonGk.length > 0 
+          ? nonGk[Math.floor(rng() * nonGk.length)] 
+          : defendingPlayers[0];
+          
+        if (!defPlayer) continue;
+
         events.push({
           minute,
           type: "own_goal",
