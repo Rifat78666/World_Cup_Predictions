@@ -10,7 +10,6 @@ import LiveGameweek from "./pages/LiveGameweek.jsx";
 import Leaderboard from "./pages/Leaderboard.jsx";
 import AIAnalysis from "./pages/AIAnalysis.jsx";
 import Settings from "./pages/Settings.jsx";
-import LiveScorecard from "./components/LiveScorecard.jsx";
 
 import { PredictorProvider } from "./context/PredictorContext.jsx";
 import { FantasyProvider } from "./context/FantasyContext.jsx";
@@ -154,9 +153,6 @@ function AppContent() {
           {renderActivePage()}
         </main>
       </div>
-
-      {/* Live Scorecard Floating Widget */}
-      <LiveScorecard />
 
       <footer className="w-full border-t border-border bg-card py-6 text-center text-xs text-muted font-semibold">
         <div className="mx-auto max-w-7xl px-4 md:px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
