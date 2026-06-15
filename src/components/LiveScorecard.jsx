@@ -1,16 +1,41 @@
 import React, { useState, useEffect } from "react";
 import { useFantasy } from "../context/FantasyContext.jsx";
+import { usePredictor } from "../context/PredictorContext.jsx";
 import { teams } from "../data/teams.js";
 import { ChevronDown, ChevronUp, Radio, HelpCircle } from "lucide-react";
 
 export default function LiveScorecard() {
   const { squadPlayers } = useFantasy();
+  const { groupFixtures } = usePredictor();
   const [collapsed, setCollapsed] = useState(true);
-  const [liveMatches, setLiveMatches] = useState([
-    { id: "live_1", home: "USA", away: "ENG", homeScore: 1, awayScore: 1, minute: 54, lastScoreChange: null },
-    { id: "live_2", home: "BRA", away: "FRA", homeScore: 2, awayScore: 0, minute: 76, lastScoreChange: null },
-    { id: "live_3", home: "ARG", away: "GER", homeScore: 0, awayScore: 0, minute: 12, lastScoreChange: null }
-  ]);
+  const [liveMatches, setLiveMatches] = useState([]);
+
+  // Initialize live matches from today's actual fixtures
+  useEffect(() => {
+    if (!groupFixtures || groupFixtures.length === 0) return;
+
+    const todayObj = new Date();
+    let todaysDate = todayObj.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    
+    let todaysMatches = groupFixtures.filter(f => f.date === todaysDate);
+    if (todaysMatches.length === 0) {
+      todaysDate = groupFixtures[0].date;
+      todaysMatches = groupFixtures.filter(f => f.date === todaysDate);
+    }
+
+    // Convert them to "live" state objects
+    const initialLive = todaysMatches.map((fix, idx) => ({
+      id: `live_${fix.id}`,
+      home: fix.home,
+      away: fix.away,
+      homeScore: fix.homeScore || 0,
+      awayScore: fix.awayScore || 0,
+      minute: Math.floor(Math.random() * 80) + 1, // Random starting minute
+      lastScoreChange: null
+    }));
+
+    setLiveMatches(initialLive);
+  }, [groupFixtures]);
 
   // Handle live score simulation (polls every 60s to increment minute or score)
   useEffect(() => {
